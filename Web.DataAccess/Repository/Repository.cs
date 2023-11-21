@@ -20,12 +20,12 @@ namespace ZeroToHero.DataAccess.Repository
 
 
         }
-        void IRepository<T>.Add(T entity)
+      public void Add(T entity)
         {
             dbSet.Add(entity);
         }
 
-        T IRepository<T>.Get(Expression<Func<T, bool>> predicate)
+        public T Get(System.Linq.Expressions.Expression<Func<T,bool>>filter)
         {
             
         }
