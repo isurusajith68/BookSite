@@ -1,21 +1,25 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ZeroToHero.DataAccess.Data;
+using ZeroToHero.DataAccess.Repository;
+using ZeroToHero.DataAccess.Repository.IRepository;
 using ZeroToHero.Models.Models;
 
-namespace ZeroToHero.Controllers
+namespace ZeroToHero.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     public class CategoryController : Controller
     {
 
-        private readonly ApplicationDbContext _db;
-        public CategoryController(ApplicationDbContext db) {
-            
-            _db = db;
-        
+        private readonly IunitOfWorks _unitOfWorks;
+        public CategoryController(IunitOfWorks unitOfWorks)
+        {
+
+            _unitOfWorks = unitOfWorks;
+
         }
         public IActionResult Index()
         {
-            List<Category> objCategoryLists = _db.Categories.ToList();
+            List<Category> objCategoryLists = _unitOfWorks.Category.GetAll().ToList();
 
             return View(objCategoryLists);
         }
@@ -28,15 +32,15 @@ namespace ZeroToHero.Controllers
         [HttpPost]
         public IActionResult Create(Category obj)
         {
-            if(obj.Name == obj.DisplayOrder.ToString()) 
+            if (obj.Name == obj.DisplayOrder.ToString())
             {
                 ModelState.AddModelError("Name", "Diplay order cannot exacly match the name");
-            
+
             }
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                _db.Categories.Add(obj);
-                _db.SaveChanges();
+                _unitOfWorks.Category.Add(obj);
+                _unitOfWorks.Save();
                 TempData["success"] = "Category create successfully";
                 return RedirectToAction("Index");
 
@@ -52,7 +56,7 @@ namespace ZeroToHero.Controllers
                 return NotFound();
             }
 
-            var catogoty = _db.Categories.Find(id);
+            var catogoty = _unitOfWorks.Category.Get(u => u.Id == id);
 
             if (catogoty == null)
             {
@@ -68,8 +72,8 @@ namespace ZeroToHero.Controllers
 
             if (ModelState.IsValid)
             {
-                _db.Categories.Update(obj);
-                _db.SaveChanges();
+                _unitOfWorks.Category.Update(obj);
+                _unitOfWorks.Save();
                 TempData["success"] = "Category update successfully";
                 return RedirectToAction("Index");
 
@@ -85,7 +89,7 @@ namespace ZeroToHero.Controllers
                 return NotFound();
             }
 
-            var catogoty = _db.Categories.Find(id);
+            var catogoty = _unitOfWorks.Category.Get(u => u.Id == id);
 
             if (catogoty == null)
             {
@@ -100,14 +104,14 @@ namespace ZeroToHero.Controllers
         {
 
 
-            Category? obji = _db.Categories.Find(id);
+            Category? obji = _unitOfWorks.Category.Get(u => u.Id == id);
             if (obji == null)
             {
                 return NotFound();
             }
 
-            _db.Categories.Remove(obji);
-            _db.SaveChanges();
+            _unitOfWorks.Category.Remove(obji);
+            _unitOfWorks.Save();
             TempData["success"] = "Category deleted successfully";
             return RedirectToAction("Index");
 

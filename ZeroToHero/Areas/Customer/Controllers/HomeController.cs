@@ -3,8 +3,9 @@ using System.Diagnostics;
 using ZeroToHero.Models;
 using ZeroToHero.Models.Models;
 
-namespace ZeroToHero.Controllers
+namespace ZeroToHero.Areas.Customer.Controllers
 {
+    [Area("Customer")]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;

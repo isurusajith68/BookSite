@@ -25,24 +25,28 @@ namespace ZeroToHero.DataAccess.Repository
             dbSet.Add(entity);
         }
 
-        public T Get(System.Linq.Expressions.Expression<Func<T,bool>>filter)
+        public T Get(Expression<Func<T,bool>>filter)
         {
-            
+            IQueryable<T> query = dbSet;
+            query = query.Where(filter);
+            return query.FirstOrDefault();
+         }
+
+        public IEnumerable<T> GetAll()
+        {
+            IQueryable<T> query = dbSet;
+           
+            return query.ToList();
         }
 
-        IEnumerable<T> IRepository<T>.GetAll()
+        public void Remove(T entity)
         {
-            throw new NotImplementedException();
+           dbSet.Remove(entity);
         }
 
-        void IRepository<T>.Remove(T entity)
+      public void RemoveRange(IEnumerable<T> entities)
         {
-            throw new NotImplementedException();
-        }
-
-        void IRepository<T>.RemoveRange(IEnumerable<T> entities)
-        {
-            throw new NotImplementedException();
+            dbSet.RemoveRange(entities);
         }
     }
 }
