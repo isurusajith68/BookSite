@@ -1,12 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ZeroToHero.DataAccess.Data;
 using ZeroToHero.DataAccess.Repository;
 using ZeroToHero.DataAccess.Repository.IRepository;
 using ZeroToHero.Models.Models;
+using ZeroToHero.Utility;
 
 namespace ZeroToHero.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = SD.Role_Admin)]
     public class CategoryController : Controller
     {
 
