@@ -17,6 +17,9 @@ namespace ZeroToHero.DataAccess.Repository
         {
             _db = db;
             this.dbSet = _db.Set<T>();
+            _db.Product.Include(u => u.Category).Include(u => u.CategoryId);
+
+
 
 
         }
@@ -25,17 +28,34 @@ namespace ZeroToHero.DataAccess.Repository
             dbSet.Add(entity);
         }
 
-        public T Get(Expression<Func<T,bool>>filter)
+        public T Get(Expression<Func<T,bool>>filter, string? includeProperties = null)
         {
             IQueryable<T> query = dbSet;
             query = query.Where(filter);
+
+            if (!string.IsNullOrEmpty(includeProperties))
+            {
+                foreach (var include in includeProperties
+                    .Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                    {
+                    query = query.Include(include);
+                }
+            }
+
             return query.FirstOrDefault();
          }
-
-        public IEnumerable<T> GetAll()
+        //Categot
+        public IEnumerable<T> GetAll(string? includeProperties =null)
         {
             IQueryable<T> query = dbSet;
-           
+           if(!string.IsNullOrEmpty(includeProperties))
+            {
+                foreach(var include in includeProperties
+                    .Split(new char[] {','},StringSplitOptions.RemoveEmptyEntries))
+                    {
+                    query=query.Include(include);
+                }
+            }
             return query.ToList();
         }
 
